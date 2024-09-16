@@ -32,6 +32,7 @@ const GameBoard = function () {
 const GameControl = function () {
 
     const board = GameBoard();
+    let theBoard = board.getBoard();
 
     const playerOne = "X";
     const playerTwo = "O";
@@ -58,7 +59,7 @@ const GameControl = function () {
 
         //check win condition
         //check rows first
-        board.getBoard().forEach((rows) => {
+        theBoard.forEach((rows) => {
 
             //win condition for rows
             if (rows.every(i => i === rows[0]) && rows[0] != " "){
@@ -66,18 +67,31 @@ const GameControl = function () {
                 return;
             }
            
-        })
+        });
          //check win condition for columns
-        let verticalBoard = board.getBoard()[0].map((cols, index) => board.getBoard().map((cols) => cols[index]));
-        console.table(verticalBoard);
+        let verticalBoard = theBoard[0].map((cols, index) => theBoard.map((cols) => cols[index]));
+
         verticalBoard.forEach((cols) => {
             if(cols.every(i => i === cols[0]) && cols[0] != " "){
                 console.log("win");
                 return;
             }
-        })
+        });
 
         //check win condition for diagonal
+        let diag = [];
+        diag.push(theBoard.map((rows, index) => rows[index]), 
+                          [...theBoard].reverse().map((rows, index) => rows[index]));
+        console.log(diag)
+        diag.forEach((cols) => {
+            if(cols.every(i => i === cols[0]) && cols[0] != " "){
+                console.log("win");
+                return;
+            }
+        });
+        
+
+        
         //switch the player
         switchPlayer();
         //print the board
@@ -86,21 +100,24 @@ const GameControl = function () {
     return {playRound}
 }
 const game = GameControl();
-game.playRound(1,2);
-game.playRound(2,1);
-game.playRound(0,2);
-game.playRound(2,0);
-game.playRound(2,2);
+// game.playRound(1,2);
+// game.playRound(2,1);
+// game.playRound(0,2);
+// game.playRound(2,0);
+// game.playRound(2,2);
 
 // const diag=a=>a.map((v,i)=>v[i]);
-// let arr =[ 
-//     [1,2,3],
-//     [4,5,6],
-//     [7,8,9]
-// ];
-// console.log(arr[0])
-// let newArr = arr[0].map((item, index) => {
-//    return arr.map((thing) => thing[index])
-// })
+let arr =[ 
+    [1,2,3],
+    [4,5,6],
+    [7,8,9]
+];
 
-// console.table(newArr);
+let newArr = arr[0].map((item, index) => {
+   return arr.map((thing) => thing[index])
+})
+
+
+
+console.table(newArr);
+console.table(arr);
