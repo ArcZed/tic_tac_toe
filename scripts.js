@@ -30,7 +30,7 @@ const GameBoard = function () {
 }
 
 const GameControl = function () {
-
+    
     const board = GameBoard();
     let theBoard = board.getBoard();
 
@@ -38,25 +38,36 @@ const GameControl = function () {
     const playerTwo = "O";
     let currentPlayer = playerOne;
 
+    let gameOver = false;
+
     //switch the current player
     const switchPlayer = () => {
-        currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
+        currentPlayer = currentPlayer === playerOne && !gameOver ? playerTwo : playerOne;
     }
     
+    const getCurrentPlayer = () => currentPlayer;
     //print board after every round
     const PrintRound = () => {
         board.printBoard();
-        console.log(`${currentPlayer} turn`)
+        if (!gameOver){
+        console.log(`${currentPlayer} turn`);
+        }
+        else {console.log(`Player ${currentPlayer} has won`)}
     }
     //play 1 round
     const playRound = (row, col) => {
+
+        
         //place the move
         let move = board.placeMove(row, col, currentPlayer);
-    if (move === "Invalid")  {
-        console.log("invalid move");
-        return;
-    } 
-
+        if (move === "Invalid") {
+            console.log("invalid move");
+            return;
+        } 
+        
+        const victoryScreen = function () {
+            gameOver = true;
+        }
         //check win condition
         //check rows first
         theBoard.forEach((rows) => {
@@ -64,6 +75,7 @@ const GameControl = function () {
             //win condition for rows
             if (rows.every(i => i === rows[0]) && rows[0] != " "){
                 console.log("win");
+                victoryScreen();
                 return;
             }
            
@@ -74,6 +86,7 @@ const GameControl = function () {
         verticalBoard.forEach((cols) => {
             if(cols.every(i => i === cols[0]) && cols[0] != " "){
                 console.log("win");
+                victoryScreen();
                 return;
             }
         });
@@ -81,43 +94,25 @@ const GameControl = function () {
         //check win condition for diagonal
         let diag = [];
         diag.push(theBoard.map((rows, index) => rows[index]), 
-                          [...theBoard].reverse().map((rows, index) => rows[index]));
-        console.log(diag)
+                          theBoard.slice().reverse().map((rows, index) => rows[index]));
         diag.forEach((cols) => {
             if(cols.every(i => i === cols[0]) && cols[0] != " "){
                 console.log("win");
+                victoryScreen();
                 return;
             }
         });
-        
-
         
         //switch the player
         switchPlayer();
         //print the board
         PrintRound();
     }
-    return {playRound}
+    return {playRound, getCurrentPlayer}
 }
 const game = GameControl();
-// game.playRound(1,2);
-// game.playRound(2,1);
-// game.playRound(0,2);
-// game.playRound(2,0);
-// game.playRound(2,2);
-
-// const diag=a=>a.map((v,i)=>v[i]);
-let arr =[ 
-    [1,2,3],
-    [4,5,6],
-    [7,8,9]
-];
-
-let newArr = arr[0].map((item, index) => {
-   return arr.map((thing) => thing[index])
-})
-
-
-
-console.table(newArr);
-console.table(arr);
+game.playRound(1,2);
+game.playRound(2,1);
+game.playRound(0,2);
+game.playRound(2,0);
+game.playRound(2,2);
