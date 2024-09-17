@@ -43,10 +43,12 @@ const GameControl = function () {
 
     //switch the current player
     const switchPlayer = () => {
-        currentPlayer = currentPlayer === playerOne && !gameOver ? playerTwo : playerOne;
+        currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
     }
     
     const getCurrentPlayer = () => currentPlayer;
+
+    const getGameState = () => {return {gameOver, gameDraw}}
 
     //print board after every round
     const PrintRound = () => {
@@ -107,27 +109,22 @@ const GameControl = function () {
         });
 
         //draw condition
-        if(gameBoard.findIndex((cell, i) => cell[i] === " ") === -1 && !gameOver){
+        
+        
+        if(gameBoard.findIndex(arr => arr.includes(" ")) === -1 && !gameOver){
             gameOver = true;
             gameDraw = true;
-            return 
         }
-        console.log(gameBoard.findIndex((cell, i) => cell[i] === " "))
+
         //switch the player
-        switchPlayer();
+        if (!gameOver){
+        switchPlayer();}
         //print the board
         PrintRound();
     }
 
-    return {playRound, getCurrentPlayer, gameBoard}
+    return {playRound, getCurrentPlayer, getBoard: board.getBoard, getGameState}
 }
-
-// const game = GameControl();
-// game.playRound(1,2);
-// game.playRound(2,1);
-// game.playRound(0,2);
-// game.playRound(2,0);
-// game.playRound(2,2);
 
 const ScreenControl = function () {
 
@@ -135,12 +132,23 @@ const ScreenControl = function () {
     const msg = document.querySelector(".msg");
 
     const game = GameControl();
+    
+    const updateScreenText = () => {
 
+        msg.textContent = game.getCurrentPlayer() === "X" ? `It is Player One's turn` : `It is Player Two's turn`
+        if(game.getGameState().gameOver && !game.getGameState().gameDraw){
+            msg.textContent = game.getCurrentPlayer() === "X" ? `Player One won! Congratulation!!` : `Player Two won! Congratulation!!`
+        }
+        else if(game.getGameState().gameOver && game.getGameState().gameDraw){
+            msg.textContent = `The game is drawn!`
+        }
+    }
+   
     const updateScreen = () => {
-        //add value attribute to the cell when create board
-        board.textContent = ""
+        board.textContent = "";
+        updateScreenText();
 
-        game.gameBoard.forEach((row, rowIndex) => {
+        game.getBoard().forEach((row, rowIndex) => {
             
             row.forEach((col, colIndex) =>{
                 
@@ -149,6 +157,7 @@ const ScreenControl = function () {
                 cell.className = "cell";
                 cell.setAttribute("row", rowIndex);
                 cell.setAttribute("col", colIndex);
+                cell.textContent = `${game.getBoard()[rowIndex][colIndex]}`
             })
         });
 
@@ -162,6 +171,7 @@ const ScreenControl = function () {
                 let col = item.getAttribute("col");
                 game.playRound(row, col);
                 updateScreen();
+
             })
         })
     }

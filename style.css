@@ -34,4 +34,7 @@ height: 5vh;
     height: calc(50vh / 3);
     background-color:aquamarine;
     border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
