@@ -1,0 +1,37 @@
+html, body{
+    margin: 0;
+    width: 100%;
+}
+
+textarea { 
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+}
+
+.header {
+height: 5vh;
+}
+
+.container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+    gap: 5vh;
+}
+
+.board {
+    width: 50vh;
+    height: 50vh;
+    background-color: antiquewhite;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.cell {
+    box-sizing: border-box;
+    width: calc(50vh /3);
+    height: calc(50vh / 3);
+    background-color:aquamarine;
+    border: 1px solid black;
+}

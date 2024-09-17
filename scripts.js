@@ -32,7 +32,7 @@ const GameBoard = function () {
 const GameControl = function () {
     
     const board = GameBoard();
-    let theBoard = board.getBoard();
+    let gameBoard = board.getBoard();
 
     const playerOne = "X";
     const playerTwo = "O";
@@ -70,7 +70,7 @@ const GameControl = function () {
         }
         //check win condition
         //check rows first
-        theBoard.forEach((rows) => {
+        gameBoard.forEach((rows) => {
 
             //win condition for rows
             if (rows.every(i => i === rows[0]) && rows[0] != " "){
@@ -81,7 +81,7 @@ const GameControl = function () {
            
         });
          //check win condition for columns
-        let verticalBoard = theBoard[0].map((cols, index) => theBoard.map((cols) => cols[index]));
+        let verticalBoard = gameBoard[0].map((cols, index) => gameBoard.map((cols) => cols[index]));
 
         verticalBoard.forEach((cols) => {
             if(cols.every(i => i === cols[0]) && cols[0] != " "){
@@ -93,8 +93,8 @@ const GameControl = function () {
 
         //check win condition for diagonal
         let diag = [];
-        diag.push(theBoard.map((rows, index) => rows[index]), 
-                          theBoard.slice().reverse().map((rows, index) => rows[index]));
+        diag.push(gameBoard.map((rows, index) => rows[index]), 
+                          gameBoard.slice().reverse().map((rows, index) => rows[index]));
         diag.forEach((cols) => {
             if(cols.every(i => i === cols[0]) && cols[0] != " "){
                 console.log("win");
@@ -108,11 +108,50 @@ const GameControl = function () {
         //print the board
         PrintRound();
     }
-    return {playRound, getCurrentPlayer}
+
+    return {playRound, getCurrentPlayer, gameBoard}
 }
-const game = GameControl();
-game.playRound(1,2);
-game.playRound(2,1);
-game.playRound(0,2);
-game.playRound(2,0);
-game.playRound(2,2);
+
+// const game = GameControl();
+// game.playRound(1,2);
+// game.playRound(2,1);
+// game.playRound(0,2);
+// game.playRound(2,0);
+// game.playRound(2,2);
+
+const ScreenControl = function () {
+
+    const board = document.querySelector(".board");
+    const msg = document.querySelector(".msg");
+
+    const game = GameControl();
+    //add value attribute to the cell when create board
+    game.gameBoard.forEach((row, rowIndex) => {
+
+        row.forEach((col, colIndex) =>{
+
+            const cell = document.createElement("div");
+            board.appendChild(cell);
+            cell.className = "cell";
+            cell.setAttribute("row", rowIndex);
+            cell.setAttribute("col", colIndex);
+        })
+    })
+    
+    const cell = document.querySelectorAll(".cell");
+    cell.forEach((item) => {
+        //play round after each click
+        item.addEventListener("click", (e) => {
+
+            console.log(item.getAttribute("row"), item.getAttribute("col"));
+            let row = item.getAttribute("row");
+            let col = item.getAttribute("col");
+            game.playRound(row, col);
+
+            //check the 
+        });
+    })
+    
+}
+
+const screen = ScreenControl();
