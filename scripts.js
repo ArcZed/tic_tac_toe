@@ -1,15 +1,18 @@
 const GameBoard = function () {
     const rows = 3;
     const column = 3;
-    const board = []
+    const board = [];
 
     //make the board
-    for (let i = 0; i < rows; i++) {
-        board[i] = [];
-        for (let j = 0; j < column; j++) {
-            board[i][j] = " ";
+    const makeBoard = () => {
+        for (let i = 0; i < rows; i++) {
+            board[i] = [];
+            for (let j = 0; j < column; j++) {
+                board[i][j] = " ";
+            }
         }
     }
+    makeBoard();
 
     const getBoard = () => board;
 
@@ -26,7 +29,7 @@ const GameBoard = function () {
         console.table(board);
     }
 
-    return {getBoard, placeMove, printBoard}
+    return {getBoard, placeMove, printBoard, makeBoard}
 }
 
 const GameControl = function () {
@@ -40,7 +43,8 @@ const GameControl = function () {
 
     let gameOver = false;
     let gameDraw = false;
-
+    
+    if(gameOver){return}
     //switch the current player
     const switchPlayer = () => {
         currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
@@ -49,18 +53,6 @@ const GameControl = function () {
     const getCurrentPlayer = () => currentPlayer;
 
     const getGameState = () => {return {gameOver, gameDraw}}
-
-    //print board after every round
-    const PrintRound = () => {
-        board.printBoard();
-        if (!gameOver && !gameDraw){
-        console.log(`${currentPlayer} turn`);
-        }
-        else if (gameDraw){
-        console.log(`Game is drawn`)
-        }
-        else {console.log(`Player ${currentPlayer} has won`)}
-    }
 
     //play 1 round
     const playRound = (row, col) => {
@@ -73,7 +65,7 @@ const GameControl = function () {
                 return;
             } 
         }
-        const victoryScreen = function () {
+        const victoryScreen = function (arr) {
             gameOver = true;
         }
         //check win condition
@@ -82,7 +74,7 @@ const GameControl = function () {
 
             //win condition for rows
             if (rows.every(i => i === rows[0]) && rows[0] != " " && !gameOver){
-                victoryScreen();
+                victoryScreen(gameBoard);
                 return;
             }
            
@@ -92,7 +84,7 @@ const GameControl = function () {
 
         verticalBoard.forEach((cols) => {
             if(cols.every(i => i === cols[0]) && cols[0] != " " && !gameOver){
-                victoryScreen();
+                victoryScreen(verticalBoard);
                 return;
             }
         });
@@ -103,11 +95,12 @@ const GameControl = function () {
                           gameBoard.slice().reverse().map((rows, index) => rows[index]));
         diag.forEach((cols) => {
             if(cols.every(i => i === cols[0]) && cols[0] != " " && !gameOver){
-                victoryScreen();
+                victoryScreen(diag);
                 return;
             }
+            
         });
-
+        board.printBoard();
         //draw condition
         
         
@@ -119,11 +112,18 @@ const GameControl = function () {
         //switch the player
         if (!gameOver){
         switchPlayer();}
-        //print the board
-        PrintRound();
+    }
+    
+    const resetBoard = () => {
+        board.makeBoard();
+        
+        currentPlayer = playerOne;
+
+        gameOver = false;
+        gameDraw = false;
     }
 
-    return {playRound, getCurrentPlayer, getBoard: board.getBoard, getGameState}
+    return {playRound, getCurrentPlayer, getBoard: board.getBoard, getGameState, resetBoard}
 }
 
 const ScreenControl = function () {
@@ -143,9 +143,19 @@ const ScreenControl = function () {
             msg.textContent = `The game is drawn!`
         }
     }
+
+    const restartGame = () => {
+        const restartBtn = document.querySelector(".restartBtn");
+        restartBtn.addEventListener("click", () => {
+            game.resetBoard();
+            updateScreen();
+        })
+    }
    
     const updateScreen = () => {
         board.textContent = "";
+
+        restartGame();
         updateScreenText();
 
         game.getBoard().forEach((row, rowIndex) => {
@@ -174,6 +184,8 @@ const ScreenControl = function () {
 
             })
         })
+
+       
     }
         updateScreen();
 
