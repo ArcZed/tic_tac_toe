@@ -108,8 +108,7 @@ const GameControl = function () {
                 gameBoard[a[0]][a[1]] === gameBoard[b[0]][b[1]] &&
                 gameBoard[b[0]][b[1]] === gameBoard[c[0]][c[1]] &&
                 gameBoard[a[0]][a[1]] !== " " &&
-                !gameOver
-            ) {
+                !gameOver) {
                 winningCells = diagonal;
                 victoryScreen(winningCells);
                 return;
@@ -118,12 +117,7 @@ const GameControl = function () {
             
         board.printBoard();
 
-
-        
-
         //draw condition
-        
-        
         if(gameBoard.findIndex(arr => arr.includes(" ")) === -1 && !gameOver){
             gameOver = true;
             gameDraw = true;

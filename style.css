@@ -14,10 +14,6 @@ body {
     font-size: 100%;
 }
 
-textarea { 
-    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-}
-
 .content {
     margin-top: 2%;
     display: flex;
@@ -112,14 +108,14 @@ input {
 
     animation: blink-animation 1s steps(2, start) 3;
     
-    background-color: #F56416;
+    background-color: #F17105;
   }
   @keyframes blink-animation {
     from {
-        background-color: #F56416;
+        opacity: 0.5;
     }
     to {
-      background-color: #083d77;
+        opacity: 1;
     }
   }
   
