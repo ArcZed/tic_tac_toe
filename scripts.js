@@ -67,6 +67,8 @@ const GameControl = function () {
         }
         const victoryScreen = function (arr) {
             gameOver = true;
+            //return the winning line
+            console.log(arr.flat());
         }
         //check win condition
         //check rows first
@@ -84,7 +86,7 @@ const GameControl = function () {
 
         verticalBoard.forEach((cols) => {
             if(cols.every(i => i === cols[0]) && cols[0] != " " && !gameOver){
-                victoryScreen(verticalBoard);
+                victoryScreen(gameBoard);
                 return;
             }
         });
@@ -95,12 +97,16 @@ const GameControl = function () {
                           gameBoard.slice().reverse().map((rows, index) => rows[index]));
         diag.forEach((cols) => {
             if(cols.every(i => i === cols[0]) && cols[0] != " " && !gameOver){
-                victoryScreen(diag);
+                victoryScreen(gameBoard);
                 return;
             }
             
         });
         board.printBoard();
+
+        //look for the winning row
+        
+
         //draw condition
         
         
@@ -131,13 +137,32 @@ const ScreenControl = function () {
     const board = document.querySelector(".board");
     const msg = document.querySelector(".msg");
 
+    const playerOneName = document.querySelector("#playerOne");
+    const playerTwoName = document.querySelector("#playerTwo");
+    
     const game = GameControl();
     
-    const updateScreenText = () => {
+    const makeNameUppercase = (name) => {
+        name = name.charAt(0).toUpperCase() + name.slice(1);
+        return name
+    }
 
-        msg.textContent = game.getCurrentPlayer() === "X" ? `It is Player One's turn` : `It is Player Two's turn`
+    const updateScreenText = () => {
+        
+        if(playerOneName.value === "" && playerTwoName.value === ""){
+            msg.textContent = "Enter your name and play";
+            return
+        }
+
+        msg.textContent = game.getCurrentPlayer() === "X" ? 
+            `It is ${makeNameUppercase(playerOneName.value)}'s turn` : 
+            `It is ${makeNameUppercase(playerTwoName.value)}'s turn`;
+        
+
         if(game.getGameState().gameOver && !game.getGameState().gameDraw){
-            msg.textContent = game.getCurrentPlayer() === "X" ? `Player One won! Congratulation!!` : `Player Two won! Congratulation!!`
+            msg.textContent = game.getCurrentPlayer() === "X" ? 
+                `${makeNameUppercase(playerOneName.value)} won! Congratulation!!` : 
+                `${makeNameUppercase(playerTwoName.value)} won! Congratulation!!`
         }
         else if(game.getGameState().gameOver && game.getGameState().gameDraw){
             msg.textContent = `The game is drawn!`
@@ -153,6 +178,7 @@ const ScreenControl = function () {
     }
    
     const updateScreen = () => {
+
         board.textContent = "";
 
         restartGame();
@@ -175,20 +201,14 @@ const ScreenControl = function () {
         cell.forEach((item) => {
             //play round after each click
             item.addEventListener("click", (e) => {
-
-                console.log(item.getAttribute("row"), item.getAttribute("col"));
                 let row = item.getAttribute("row");
                 let col = item.getAttribute("col");
                 game.playRound(row, col);
                 updateScreen();
-
-            })
-        })
-
-       
+            });
+        });
     }
         updateScreen();
-
 }
 
 const screen = ScreenControl();

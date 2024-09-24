@@ -8,11 +8,18 @@
     <script src="scripts.js" defer></script>
 </head>
 <body>
-    <div class="header"></div>
-    <div class="container">
-        <div class="msg" row="">Hey this is a game of tic tac toe</div>
-        <div class="board"></div>
-        <div class="restartBtn">Restart</div>
-    </div>
+    <div class="content">
+        <form>
+            <label for="playerOne">Enter player name:</label><br>
+            <input type="text" id="playerOne" placeholder="Player One" name="playerOne" maxlength="14"><br>
+            <label for="playerTwo">Enter player name:</label><br>
+            <input type="text" id="playerTwo" placeholder="Player Two" name="playerTwo" maxlength="14"><br>
+        </form>
+        <div class="container">
+            <div class="msg">Enter your names:</div>
+            <div class="board"></div>
+            <div class="restartBtn">Restart</div>
+        </div>
+    <div>
 </body>
 </html>

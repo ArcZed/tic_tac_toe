@@ -11,18 +11,46 @@ html, body{
 
 body {
     background-color: #F4D35E;
+    font-size: 100%;
 }
 
 textarea { 
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 }
 
-.header {
-height: 5vh;
+.content {
+    margin-top: 2%;
+    display: flex;
+    justify-content:  space-evenly;
 }
 
-.container{
-    width: 100%;
+form {
+
+    display: flex;
+    flex-flow: column;
+    margin-top: 5%;
+    font-size: 4rem;
+    font-family: "Tricky Jimmy",sans-serif;
+    z-index: 1;
+
+}
+
+
+
+input {
+    
+    all: unset;
+    width: 30vh;
+    height: 10vh;
+    font-size: 2.5rem;
+    opacity: 0.6;
+    border: 0.5vh solid #F56416;
+    border-radius: 2vh;
+    padding-left: 1vh;
+    text-transform: capitalize;
+}
+
+.container{   
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,7 +59,7 @@ height: 5vh;
 }
 
 .msg {
-    font-size: 4rem;
+    font-size: 5rem;
     font-family: "Tricky Jimmy",sans-serif;
 }
 
