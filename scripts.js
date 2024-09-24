@@ -43,6 +43,8 @@ const GameControl = function () {
 
     let gameOver = false;
     let gameDraw = false;
+
+    let winningCells = [];
     
     if(gameOver){return}
     //switch the current player
@@ -54,6 +56,7 @@ const GameControl = function () {
 
     const getGameState = () => {return {gameOver, gameDraw}}
 
+    const getWinningCellsCord = () => winningCells
     //play 1 round
     const playRound = (row, col) => {
 
@@ -65,18 +68,20 @@ const GameControl = function () {
                 return;
             } 
         }
-        const victoryScreen = function (arr) {
+        const victoryScreen = function (winningCells) {
             gameOver = true;
             //return the winning line
-            console.log(arr.flat());
+            return winningCells
         }
+
         //check win condition
         //check rows first
-        gameBoard.forEach((rows) => {
+        gameBoard.forEach((rows, rowIndex) => {
 
             //win condition for rows
             if (rows.every(i => i === rows[0]) && rows[0] != " " && !gameOver){
-                victoryScreen(gameBoard);
+                winningCells = [[rowIndex, 0], [rowIndex, 1], [rowIndex, 2]];
+                victoryScreen(winningCells);
                 return;
             }
            
@@ -84,27 +89,36 @@ const GameControl = function () {
          //check win condition for columns
         let verticalBoard = gameBoard[0].map((cols, index) => gameBoard.map((cols) => cols[index]));
 
-        verticalBoard.forEach((cols) => {
+        verticalBoard.forEach((cols, colIndex) => {
             if(cols.every(i => i === cols[0]) && cols[0] != " " && !gameOver){
-                victoryScreen(gameBoard);
+                winningCells = [[0, colIndex], [1, colIndex], [2, colIndex]];
+                victoryScreen(winningCells);
                 return;
             }
         });
 
         //check win condition for diagonal
-        let diag = [];
-        diag.push(gameBoard.map((rows, index) => rows[index]), 
-                          gameBoard.slice().reverse().map((rows, index) => rows[index]));
-        diag.forEach((cols) => {
-            if(cols.every(i => i === cols[0]) && cols[0] != " " && !gameOver){
-                victoryScreen(gameBoard);
+        let diag = [
+            [[0, 0], [1, 1], [2, 2]],
+            [[0, 2], [1, 1], [2, 0]]  
+        ];
+        diag.forEach(diagonal => {
+            const [a, b, c] = diagonal;
+            if (
+                gameBoard[a[0]][a[1]] === gameBoard[b[0]][b[1]] &&
+                gameBoard[b[0]][b[1]] === gameBoard[c[0]][c[1]] &&
+                gameBoard[a[0]][a[1]] !== " " &&
+                !gameOver
+            ) {
+                winningCells = diagonal;
+                victoryScreen(winningCells);
                 return;
             }
-            
         });
+            
         board.printBoard();
 
-        //look for the winning row
+
         
 
         //draw condition
@@ -123,13 +137,28 @@ const GameControl = function () {
     const resetBoard = () => {
         board.makeBoard();
         
+        winningCells = []
         currentPlayer = playerOne;
 
         gameOver = false;
         gameDraw = false;
     }
 
-    return {playRound, getCurrentPlayer, getBoard: board.getBoard, getGameState, resetBoard}
+    const highlightWinningCells = (winningCells) => {
+        // Select all cells in the board
+        const allCells = document.querySelectorAll(".cell");
+        
+        // Highlight only the winning cells
+        winningCells.forEach(([rowIndex, colIndex]) => {
+            allCells.forEach(cell => {
+                if (cell.getAttribute("row") == rowIndex && cell.getAttribute("col") == colIndex) {
+                    cell.classList.add("highlight"); // Add a CSS class to highlight the cell
+                }
+            });
+        });
+    }
+
+    return {playRound, getCurrentPlayer, getBoard: board.getBoard, getGameState, resetBoard, getWinningCellsCord}
 }
 
 const ScreenControl = function () {
@@ -142,6 +171,8 @@ const ScreenControl = function () {
     
     const game = GameControl();
     
+    
+
     const makeNameUppercase = (name) => {
         name = name.charAt(0).toUpperCase() + name.slice(1);
         return name
@@ -182,7 +213,7 @@ const ScreenControl = function () {
         board.textContent = "";
 
         restartGame();
-        updateScreenText();
+        
 
         game.getBoard().forEach((row, rowIndex) => {
             
@@ -190,23 +221,36 @@ const ScreenControl = function () {
                 
                 const cell = document.createElement("div");
                 board.appendChild(cell);
-                cell.className = "cell";
+                cell.classList.add("cell");
                 cell.setAttribute("row", rowIndex);
                 cell.setAttribute("col", colIndex);
                 cell.textContent = `${game.getBoard()[rowIndex][colIndex]}`
             })
         });
 
-        const cell = document.querySelectorAll(".cell");
-        cell.forEach((item) => {
+        const cells = document.querySelectorAll(".cell");
+        cells.forEach((item) => {
             //play round after each click
             item.addEventListener("click", (e) => {
                 let row = item.getAttribute("row");
                 let col = item.getAttribute("col");
                 game.playRound(row, col);
+
                 updateScreen();
             });
         });
+        if(game.getGameState().gameOver && !game.getGameState().gameDraw){
+            game.getWinningCellsCord().forEach(([rowIndex, colIndex]) => {
+                cells.forEach((cell) => {
+                    if(cell.getAttribute("row") == rowIndex && cell.getAttribute("col") == colIndex){
+                        cell.classList.add("highlight");
+                        console.log(cell);
+                    }
+                    
+                })
+            })
+        }
+        updateScreenText();
     }
         updateScreen();
 }

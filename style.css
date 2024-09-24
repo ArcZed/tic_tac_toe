@@ -35,8 +35,6 @@ form {
 
 }
 
-
-
 input {
     
     all: unset;
@@ -109,3 +107,19 @@ input {
     background-color: #083D77;
     cursor: pointer;
 }
+
+.highlight {
+
+    animation: blink-animation 1s steps(2, start) 3;
+    
+    background-color: #F56416;
+  }
+  @keyframes blink-animation {
+    from {
+        background-color: #F56416;
+    }
+    to {
+      background-color: #083d77;
+    }
+  }
+  
